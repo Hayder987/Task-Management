@@ -1,3 +1,4 @@
+import { Link } from "react-router";
 import banner from "../assets/images/banner-2.jpg";
 
 const Home = () => {
@@ -23,7 +24,9 @@ const Home = () => {
           more effortlessly!
         </p>
         <div className="flex justify-center items-center mt-8">
+         <Link to={'/task'}>
          <button className="bg-blue-800 cursor-pointer text-white py-3 px-8 rounded-md font-semibold">Get Started</button>
+         </Link>
         </div>
       </div>
     </div>
