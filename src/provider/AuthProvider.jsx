@@ -5,7 +5,7 @@ import { auth } from "../firebase/firebase.config";
 
 const AuthProvider = ({ children }) => {
   const [user, setUser] = useState();
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(true)
   const googleProvider = new GoogleAuthProvider();
 
     const registerUser = (email, password)=>{
@@ -39,7 +39,7 @@ const AuthProvider = ({ children }) => {
     }, []);
 
     const logoutUser = ()=>{
-      setLoading(false)
+      setLoading(true)
       return signOut(auth)
     }
 
