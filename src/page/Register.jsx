@@ -2,8 +2,34 @@
 import banner from "../assets/images/login.jpg";
 import { Link } from "react-router";
 import GoogleLogin from "../components/GoogleLogin";
+import useAuth from "../hook/useAuth";
+import Swal from "sweetalert2";
 
 const Register = () => {
+    const {registerUser} = useAuth();
+
+    const handleSubmit =async (e)=>{
+        e.preventDefault()
+        const form = e.target;
+        const name = form.name.value;
+        const email = form.email.value;
+        const password = form.password.value;
+
+        try{
+          await registerUser(email, password)
+          Swal.fire({
+            position: "top-end",
+            icon: "success",
+            title: "Your work has been saved",
+            showConfirmButton: false,
+            timer: 1500
+          });
+        }
+        catch(err){
+            Swal.fire(`${err?.message}`);
+        }
+    }
+
   return (
     <div className="bg-slate-100 flex justify-center items-center min-h-[100vh]">
       <div className="container p-4 rounded-lg bg-white flex items-center mx-auto">
@@ -14,7 +40,7 @@ const Register = () => {
         {/* form */}
         <div className="w-full md:w-1/2 py-10 lg:px-32">
           <h1 className="text-center text-3xl font-semibold mb-8">Sign Up</h1>
-          <form className="">
+          <form onSubmit={handleSubmit} className="">
             <div className="px-4 flex flex-col gap-5 ">
               {/* name */}
               <div className="form-control w-full">
@@ -67,7 +93,7 @@ const Register = () => {
           <p className="text-center py-4 font-medium">
             Have an Account?{" "}
             <Link to="/login">
-              <span className="text-blue-600 underline"> SignIn Now</span>
+              <span className="text-blue-600 underline"> Sign In</span>
             </Link>
           </p>
         </div>
