@@ -1,12 +1,13 @@
 
 import banner from "../assets/images/login.jpg";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import GoogleLogin from "../components/GoogleLogin";
 import useAuth from "../hook/useAuth";
 import Swal from "sweetalert2";
 
 const Register = () => {
-    const {registerUser} = useAuth();
+    const {registerUser, updateUser} = useAuth();
+    const navigate = useNavigate()
 
     const handleSubmit =async (e)=>{
         e.preventDefault()
@@ -17,13 +18,16 @@ const Register = () => {
 
         try{
           await registerUser(email, password)
+          await updateUser(name)
           Swal.fire({
             position: "top-end",
             icon: "success",
-            title: "Your work has been saved",
+            title: "User Registration Successfully",
             showConfirmButton: false,
             timer: 1500
           });
+          form.reset();
+          navigate('/task')
         }
         catch(err){
             Swal.fire(`${err?.message}`);

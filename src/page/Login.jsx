@@ -1,9 +1,36 @@
-import { Link } from "react-router"
-import GoogleLogin from "../components/GoogleLogin"
-import banner from '../assets/images/login2.jpg'
-
+import { Link, useNavigate } from "react-router";
+import GoogleLogin from "../components/GoogleLogin";
+import banner from "../assets/images/login2.jpg";
+import Swal from "sweetalert2";
+import useAuth from "../hook/useAuth";
 
 const Login = () => {
+  const {loginUser} = useAuth();
+  const navigate = useNavigate()
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const form = e.target;
+    const email = form.email.value;
+    const password = form.password.value;
+
+    try {
+      await loginUser(email, password);
+
+      Swal.fire({
+        position: "top-end",
+        icon: "success",
+        title: "User Login Successfully",
+        showConfirmButton: false,
+        timer: 1500,
+      });
+      form.reset();
+      navigate('/task')
+    } catch (err) {
+      Swal.fire(`${err?.message}`);
+    }
+  };
+
   return (
     <div className="bg-slate-100 flex justify-center items-center min-h-[100vh]">
       <div className="container p-4 rounded-lg bg-white flex items-center mx-auto">
@@ -14,7 +41,9 @@ const Login = () => {
         {/* form */}
         <div className="w-full md:w-1/2 py-10 lg:px-32">
           <h1 className="text-center text-3xl font-semibold mb-8">Sign In</h1>
-          <form className="">
+          <form
+          onSubmit={handleSubmit}
+           className="">
             <div className="px-4 flex flex-col gap-5 ">
               {/* email */}
               <div className="form-control">
@@ -52,7 +81,7 @@ const Login = () => {
           <div className="divider my-6">OR</div>
           <GoogleLogin></GoogleLogin>
           <p className="text-center py-4 font-medium">
-           Don't Have Account?{" "}
+            Don't Have Account?{" "}
             <Link to="/register">
               <span className="text-blue-600 underline"> Register Now</span>
             </Link>
@@ -60,7 +89,7 @@ const Login = () => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Login
+export default Login;
