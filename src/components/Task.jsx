@@ -1,12 +1,16 @@
 import { useState } from "react";
 import { FaPlus } from "react-icons/fa";
 import Swal from "sweetalert2";
+import useAxiosPublic from "../hook/useAxiosPublic";
+import useAuth from "../hook/useAuth";
 
 const Task = () => {
 
   const [title, setTitle]  = useState('')
   const [description, setDescription] = useState('')
-  const createDate = new Date()
+  const createDate = new Date();
+  const axiosPublic = useAxiosPublic()
+  const {user} = useAuth()
 
   const postTaskHandler = async ()=>{
       try{
@@ -18,16 +22,21 @@ const Task = () => {
         }
   
         if(!title | !description){
-          return Swal.fire("Plz Add Value!");
+          return '';
         }
-        
+
+        await axiosPublic.post(`/task?email=${user?.email}`, postData)
+        setTitle('')
+        setDescription('')
+
       }
       catch(err){
         return Swal.fire(`${err.message}`);
       }
-
-
   } 
+
+  
+
 
   return (
     <div className="min-h-[90vh] flex p-8 justify-center gap-4">
@@ -57,10 +66,12 @@ const Task = () => {
         <div className="modal-box">
            <div className="p-6">
             <h1 className="text-xl font-semibold text-center mb-4">Add Task</h1>
-            <form className="">
-              <input 
+            {/* form div */}
+            <div className="">
+            <input 
               type="text" 
               name="title"
+              value={title}
               onChange={(e)=> setTitle(e.target.value)}
               placeholder="Title" 
               className="w-full p-2 mb-4 rounded-md focus:border-blue-800 outline-none border border-gray-400"
@@ -70,10 +81,11 @@ const Task = () => {
               className=" focus:border-blue-800 p-2 rounded-md outline-none border border-gray-400  w-full resize-none" 
               placeholder="Description"
               onChange={(e)=> setDescription(e.target.value)}
+              value={description}
               rows={5}
               cols={10}
               ></textarea>
-            </form>
+            </div>
             <div className="flex justify-center gap-6">
               <button
               onClick={()=>{
