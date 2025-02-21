@@ -1,19 +1,14 @@
+
+
 import { useState } from "react";
 import Swal from "sweetalert2";
 import useAxiosPublic from "../hook/useAxiosPublic";
 import useAuth from "../hook/useAuth";
 import { useQuery } from "@tanstack/react-query";
-import { RiDeleteBinFill } from "react-icons/ri";
-import {
-  DndContext,
-  closestCenter,
-  useDraggable,
-  useDroppable,
-} from "@dnd-kit/core";
-import { FaArrowsTurnToDots } from "react-icons/fa6";
-import { GrInProgress } from "react-icons/gr";
-import { IoMdDoneAll } from "react-icons/io";
-import { format } from "date-fns";
+import { DndContext, closestCenter } from "@dnd-kit/core";
+import TaskColumn from "./TaskColumn";
+import TaskCard from "./TaskCard";
+import TaskModal from "./TaskModal";
 
 const Task = () => {
   const [title, setTitle] = useState("");
@@ -87,22 +82,51 @@ const Task = () => {
     }
   };
 
+  const deleteHandler = async (id) => {
+    try {
+      const result = Swal.fire({
+        title: "Are you sure?",
+        text: "You won't be able to revert this!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, delete it!",
+      });
+
+      if (result.isConfirmed) {
+    
+        const response = await axiosPublic.delete(`/task/${id}`);
+        
+        if (response.status === 200) {
+          Swal.fire("Deleted!", "Your task has been deleted.", "success");
+          refetch(); 
+        } else {
+          Swal.fire("Error", "Failed to delete the task.", "error");
+        }
+      }
+    } catch (err) {
+      console.error("Error deleting task:", err);
+      Swal.fire("Error", `Error deleting task: ${err.message}`, "error");
+    }
+  };
+
   return (
     <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-      <div className="min-h-[90vh] flex p-8 justify-center gap-4">
+      <div className="min-h-[90vh] grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 p-8 justify-center gap-6">
         <TaskColumn id="to-do" title="To Do" color="blue">
           {toDo?.map((item) => (
-            <TaskCard key={item._id} item={item} />
+            <TaskCard key={item._id} item={item} deleteHandler={deleteHandler} />
           ))}
         </TaskColumn>
         <TaskColumn id="in-progress" title="In Progress" color="orange">
           {inProgress?.map((item) => (
-            <TaskCard key={item._id} item={item} />
+            <TaskCard key={item._id} item={item} deleteHandler={deleteHandler} />
           ))}
         </TaskColumn>
         <TaskColumn id="done" title="Done" color="green">
           {done?.map((item) => (
-            <TaskCard key={item._id} item={item} />
+            <TaskCard key={item._id} item={item} deleteHandler={deleteHandler} />
           ))}
         </TaskColumn>
 
@@ -115,128 +139,15 @@ const Task = () => {
         </button>
 
         {/* Modal for adding task */}
-        <dialog id="task_modal" className="modal">
-          <div className="modal-box">
-            <h1 className="text-xl font-semibold text-center mb-4">Add Task</h1>
-            <input
-              type="text"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              placeholder="Title"
-              className="w-full p-2 mb-4 border border-gray-400 rounded-md"
-            />
-            <textarea
-              className="w-full p-2 border border-gray-400 rounded-md"
-              placeholder="Description"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              rows={5}
-            ></textarea>
-            <div className="flex justify-center gap-6 mt-4">
-              <button
-                onClick={postTaskHandler}
-                className="bg-blue-800 text-white py-2 px-5 rounded-md"
-              >
-                Add Task
-              </button>
-              <button
-                onClick={() => document.getElementById("task_modal").close()}
-                className="bg-red-800 text-white py-2 px-5 rounded-md"
-              >
-                Cancel
-              </button>
-            </div>
-          </div>
-        </dialog>
+        <TaskModal
+          title={title}
+          description={description}
+          setTitle={setTitle}
+          setDescription={setDescription}
+          postTaskHandler={postTaskHandler}
+        />
       </div>
     </DndContext>
-  );
-};
-
-// Task Column Component
-const TaskColumn = ({ id, title, color, children }) => {
-  const { setNodeRef } = useDroppable({ id });
-
-  return (
-    <div ref={setNodeRef} className={`bg-${color}-100 p-6 w-4/12 min-h-[80vh]`}>
-      <h2 className={`text-${color}-800 font-semibold text-xl mb-6`}>
-        {title}
-      </h2>
-      <div className="border-b-2 mb-6 border-gray-300"></div>
-      <div className="grid grid-cols-1 gap-4">{children}</div>
-    </div>
-  );
-};
-
-// Task Card Component
-const TaskCard = ({ item }) => {
-  const { attributes, listeners, setNodeRef, transform } = useDraggable({
-    id: item._id,
-  });
-
-  return (
-    <div
-      ref={setNodeRef}
-      {...listeners}
-      {...attributes}
-      className="p-4 flex justify-between items-center bg-white rounded-md shadow-md cursor-move"
-      style={{
-        transform: transform
-          ? `translate3d(${transform.x}px, ${transform.y}px, 0)`
-          : "none",
-      }}
-    >
-      <div className="w-11/12 pr-4">
-        <h1 className="font-bold">{item.title}</h1>
-        <p className="text-gray-600 text-sm">{item?.description}</p>
-        <div className="flex mt-3 justify-between items-center">
-          <p
-            className={`
-        ${item?.status === "To Do" && "text-blue-800"}
-         ${item?.status === "In Progress" && "text-orange-800"}
-          ${item?.status === "Done" && "text-green-800"}
-          font-semibold
-        `}
-          >
-            {item?.status}
-          </p>
-          <p className="">
-            {item?.createDate
-              ? format(new Date(item?.createDate), "d MMM yyyy")
-              : ""}
-          </p>
-        </div>
-      </div>
-      <div className="w-1/12 flex flex-col justify-between gap-6">
-        <button
-          className={`
-               ${item?.status === "To Do" && "text-blue-800"}
-               ${item?.status === "In Progress" && "text-orange-800"}
-               ${item?.status === "Done" && "text-green-800"}
-               cursor-pointe text-xl
-        `}
-        >
-          {item?.status === "To Do" && (
-            <span>
-              <FaArrowsTurnToDots />
-            </span>
-          )}
-          {item?.status === "In Progress" && (
-            <span className="">
-              <GrInProgress />
-            </span>
-          )}
-          {item?.status === "Done" && (
-            <span>
-              <IoMdDoneAll />
-            </span>
-          )}
-        </button>
-        <button className=" cursor-pointer text-red-600 text-xl">
-          <RiDeleteBinFill />
-        </button>
-      </div>
-    </div>
   );
 };
 
