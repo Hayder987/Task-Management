@@ -1,5 +1,3 @@
-
-
 import { useState } from "react";
 import Swal from "sweetalert2";
 import useAxiosPublic from "../hook/useAxiosPublic";
@@ -90,15 +88,15 @@ const Task = () => {
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
-      confirmButtonText: "Yes, delete it!"
-    }).then(async(result) => {
+      confirmButtonText: "Yes, delete it!",
+    }).then(async (result) => {
       if (result.isConfirmed) {
         await axiosPublic.delete(`/task/${id}`);
-        refetch()
+        refetch();
         Swal.fire({
           title: "Deleted!",
           text: "Your file has been deleted.",
-          icon: "success"
+          icon: "success",
         });
       }
     });
@@ -108,19 +106,49 @@ const Task = () => {
     <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
       <div className="min-h-[90vh] grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 p-8 justify-center gap-6">
         <TaskColumn id="to-do" title="To Do" color="bg-blue-100">
-          {toDo?.map((item) => (
-            <TaskCard key={item._id} item={item} deleteHandler={deleteHandler} />
-          ))}
+          {toDo.length === 0 ? (
+            <h1 className="text-xl font-semibold text-center">No Task Found! Plz Add</h1>
+          ) : (
+            <div className="grid grid-cols-1 gap-4">
+              {toDo?.map((item) => (
+                <TaskCard
+                  key={item._id}
+                  item={item}
+                  deleteHandler={deleteHandler}
+                />
+              ))}
+            </div>
+          )}
         </TaskColumn>
         <TaskColumn id="in-progress" title="In Progress" color="bg-orange-50">
-          {inProgress?.map((item) => (
-            <TaskCard key={item._id} item={item} deleteHandler={deleteHandler} />
-          ))}
+        {inProgress.length === 0 ? (
+            <h1 className="text-xl font-semibold text-center">No Task Found! Plz Drag & Drop</h1>
+          ) : (
+            <div className="grid grid-cols-1 gap-4">
+              {inProgress?.map((item) => (
+                <TaskCard
+                  key={item._id}
+                  item={item}
+                  deleteHandler={deleteHandler}
+                />
+              ))}
+            </div>
+          )}
         </TaskColumn>
         <TaskColumn id="done" title="Done" color="bg-green-100">
-          {done?.map((item) => (
-            <TaskCard key={item._id} item={item} deleteHandler={deleteHandler} />
-          ))}
+        {done.length === 0 ? (
+            <h1 className="text-xl font-semibold text-center">No Task Found! Drag & Drop</h1>
+          ) : (
+            <div className="grid grid-cols-1 gap-4">
+              {done?.map((item) => (
+                <TaskCard
+                  key={item._id}
+                  item={item}
+                  deleteHandler={deleteHandler}
+                />
+              ))}
+            </div>
+          )}
         </TaskColumn>
 
         {/* Add Task Button */}
