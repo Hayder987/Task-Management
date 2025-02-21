@@ -16,14 +16,14 @@ const TaskCard = ({ item, deleteHandler }) => {
       ref={setNodeRef}
       {...listeners}
       {...attributes}
-      className="p-4 flex justify-between items-center bg-white rounded-md shadow-md cursor-move"
+      className="p-4 flex justify-between items-center bg-white rounded-md shadow-md "
       style={{
         transform: transform
           ? `translate3d(${transform.x}px, ${transform.y}px, 0)`
           : "none",
       }}
     >
-      <div className="w-11/12 pr-4">
+      <div className="w-11/12 pr-4 cursor-move">
         <h1 className="font-bold">{item.title}</h1>
         <p className="text-gray-600 text-sm">{item?.description}</p>
         <div className="flex mt-3 justify-between items-center">
@@ -52,7 +52,8 @@ const TaskCard = ({ item, deleteHandler }) => {
           {item?.status === "Done" && <IoMdDoneAll />}
         </button>
         <button
-          onClick={() => deleteHandler(item?._id)}
+           onMouseUp={() => deleteHandler(item?._id)}
+          style={{ pointerEvents: "auto" }}
           className=" cursor-pointer text-red-600 text-xl"
         >
           <RiDeleteBinFill />
