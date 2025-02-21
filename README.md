@@ -38,3 +38,19 @@ Follow these steps to set up **Task Flow** on your local machine:
 
    ```bash
    git clone https://github.com/Hayder987/Task-Management.git
+
+   cd Task-management
+   
+   npm i
+
+### update Firebase credentials
+.env.local
+
+  VITE_apiKey= Your Key
+  VITE_authDomain=Your Key
+  VITE_projectId=Your Key
+  VITE_storageBucket=Your Key
+  VITE_messagingSenderId=Your Key
+  VITE_appId=Your Key
+  
+  npm run dev
