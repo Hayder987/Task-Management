@@ -3,7 +3,7 @@
 ## 📜 Short Description
 **Task Flow** is a powerful and intuitive task management application that allows users to easily organize, manage, and track their tasks. With a drag-and-drop interface and real-time updates, users can seamlessly move tasks between **To Do**, **In Progress**, and **Done** columns. The app also integrates smooth alerts, date formatting, and a clean UI for a delightful experience. 🚀
 
-![App Screenshot](./assets/images/screenshot.jpg)
+![App Screenshot](./screenshot.jpg)
 
 ## 🌐 Live Demo
 
