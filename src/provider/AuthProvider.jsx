@@ -43,8 +43,6 @@ const AuthProvider = ({ children }) => {
       return signOut(auth)
     }
 
-    console.log(user)
-
   const authInfo = {
     user,
     loading,

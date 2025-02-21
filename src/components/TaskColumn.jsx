@@ -1,19 +1,14 @@
+
+
 import PropTypes from 'prop-types';
 import { useDroppable } from "@dnd-kit/core";
-import clsx from 'clsx';
 
 const TaskColumn = ({ id, title, color, children }) => {
   const { setNodeRef } = useDroppable({ id });
 
   return (
-    <div
-      ref={setNodeRef}
-      className={clsx(`p-6 min-h-[80vh]`, {
-        [`bg-${color}-100`]: color,
-        [`text-${color}-800`]: color,
-      })}
-    >
-      <h2 className={clsx(`font-semibold text-xl mb-6`, `text-${color}-800`)}>
+    <div ref={setNodeRef} className={`${color} p-6 min-h-[80vh]`}>
+      <h2 className={`text-${color}-800 font-semibold text-xl mb-6`}>
         {title}
       </h2>
       <div className="border-b-2 mb-6 border-gray-300"></div>
@@ -30,3 +25,4 @@ TaskColumn.propTypes = {
 };
 
 export default TaskColumn;
+

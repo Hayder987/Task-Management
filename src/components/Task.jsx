@@ -82,49 +82,42 @@ const Task = () => {
     }
   };
 
-  const deleteHandler = async (id) => {
-    try {
-      const result = Swal.fire({
-        title: "Are you sure?",
-        text: "You won't be able to revert this!",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Yes, delete it!",
-      });
-
+  const deleteHandler = (id) => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!"
+    }).then(async(result) => {
       if (result.isConfirmed) {
-    
-        const response = await axiosPublic.delete(`/task/${id}`);
-        
-        if (response.status === 200) {
-          Swal.fire("Deleted!", "Your task has been deleted.", "success");
-          refetch(); 
-        } else {
-          Swal.fire("Error", "Failed to delete the task.", "error");
-        }
+        await axiosPublic.delete(`/task/${id}`);
+        refetch()
+        Swal.fire({
+          title: "Deleted!",
+          text: "Your file has been deleted.",
+          icon: "success"
+        });
       }
-    } catch (err) {
-      console.error("Error deleting task:", err);
-      Swal.fire("Error", `Error deleting task: ${err.message}`, "error");
-    }
+    });
   };
 
   return (
     <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
       <div className="min-h-[90vh] grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 p-8 justify-center gap-6">
-        <TaskColumn id="to-do" title="To Do" color="blue">
+        <TaskColumn id="to-do" title="To Do" color="bg-blue-100">
           {toDo?.map((item) => (
             <TaskCard key={item._id} item={item} deleteHandler={deleteHandler} />
           ))}
         </TaskColumn>
-        <TaskColumn id="in-progress" title="In Progress" color="orange">
+        <TaskColumn id="in-progress" title="In Progress" color="bg-orange-50">
           {inProgress?.map((item) => (
             <TaskCard key={item._id} item={item} deleteHandler={deleteHandler} />
           ))}
         </TaskColumn>
-        <TaskColumn id="done" title="Done" color="green">
+        <TaskColumn id="done" title="Done" color="bg-green-100">
           {done?.map((item) => (
             <TaskCard key={item._id} item={item} deleteHandler={deleteHandler} />
           ))}
@@ -133,7 +126,7 @@ const Task = () => {
         {/* Add Task Button */}
         <button
           onClick={() => document.getElementById("task_modal").showModal()}
-          className="fixed bottom-10 right-10 bg-green-600 text-white py-2 px-4 rounded-md shadow-lg"
+          className="fixed bottom-10 font-medium cursor-pointer right-10 bg-blue-800 text-white py-2 px-4 rounded-md shadow-lg"
         >
           + Add Task
         </button>
