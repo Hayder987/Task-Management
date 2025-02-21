@@ -46,11 +46,11 @@ Follow these steps to set up **Task Flow** on your local machine:
 ### update Firebase credentials
 .env.local
 
-  VITE_apiKey= Your Key
-  VITE_authDomain=Your Key
-  VITE_projectId=Your Key
-  VITE_storageBucket=Your Key
-  VITE_messagingSenderId=Your Key
-  VITE_appId=Your Key
+- VITE_apiKey= Your Key
+- VITE_authDomain=Your Key
+- VITE_projectId=Your Key
+- VITE_storageBucket=Your Key
+- VITE_messagingSenderId=Your Key
+- VITE_appId=Your Key
   
   npm run dev
